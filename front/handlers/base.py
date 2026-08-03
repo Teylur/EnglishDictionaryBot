@@ -1,24 +1,18 @@
 from aiogram import Router
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from aiogram.types import Message
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from front.states.states import Dictionary
 
 router = Router()
 
-def get_accept_reject_inline_keyboard() ->InlineKeyboardMarkup:
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Добавить", callback_data="word_accept"),
-           InlineKeyboardButton(text="Отклонить", callback_data="word_reject")]
-           ]
-    )
-    return keyboard
-
 @router.message(Command("start"))
-async def hello(message: Message):
+async def hello(message: Message, state: FSMContext):
     await message.answer(
         "Твой личный *словарь* английских слов\nСписок комманд /help",
         parse_mode="Markdown" # можно HTML
         )
+    await state.set_state(Dictionary.word)
 
 @router.message(Command("help"))
 async def help(message: Message):
@@ -31,8 +25,4 @@ async def dict(message: Message):
 @router.message(Command("play"))
 async def help(message: Message):
     await message.answer("Играть")
-
-@router.message()
-async def dictionary(message: Message):
-    await message.answer(message.text, reply_markup=get_accept_reject_inline_keyboard())
 
