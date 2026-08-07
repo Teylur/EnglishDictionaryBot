@@ -29,13 +29,13 @@ async def dictionary(message: Message, state: FSMContext):
 async def word_accepted(callback: CallbackQuery, state: FSMContext):
     word = await state.get_data()
     word = word["word"]
-    r: httpx.Response = httpx.post('http://127.0.0.1:8000/dict', json={'id': '1', 'body': word})
+    r: httpx.Response = httpx.post('http://127.0.0.1:8000/dict', json={'body': word})
     await callback.message.edit_text(word + " было добавлено в словарь! ✔",)
 
 
 @router.message(Dictionary.word)
 @router.callback_query(lambda c: c.data == "word_reject")
-async def word_accepted(callback: CallbackQuery, state: FSMContext):
+async def word_reject(callback: CallbackQuery, state: FSMContext):
     word = await state.get_data()
     word = word["word"]
     await state.clear()

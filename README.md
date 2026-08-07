@@ -6,4 +6,6 @@ pip install -r requirements.txt
 
 python -m front.main
 
-Next: Refactore the back part, make more connection between front and back, and connect database ( if you can )
+Next: Refactore the back part, make more connection between front and back, and connect database ( if you can ) Completed
+
+Next: start using a third-party api for translate and generating examples, make opportunity to see a word list and delete a word. 

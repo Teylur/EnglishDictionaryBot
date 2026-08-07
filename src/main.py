@@ -1,15 +1,16 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, status
-from src.schemas.dict_schema import Word
+from src.models.base import Base
+from src.schemas.dict_schema import WordCreate
+from src.db.session import engine
+from src.api.routes.dict_roter import router as dict_router
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
 
-dict: list[Word] = []
+app = FastAPI(lifespan=lifespan)
 
-@app.post("/dict", status_code=status.HTTP_201_CREATED)
-def new_word(payload: Word) -> Word:
-    dict.append(payload)
-    return payload
-
-@app.get("/dict")
-def new_word() -> list[Word]:
-    return dict
+app.include_router(dict_router)
