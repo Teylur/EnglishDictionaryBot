@@ -8,5 +8,6 @@ class WordORM(Base):
     __tablename__ = "words"
 
     body: Mapped[str]
+    user_id: Mapped[str | None]
     translate: Mapped[str | None]
     examples: Mapped[List[str] | None] = mapped_column(JSON)

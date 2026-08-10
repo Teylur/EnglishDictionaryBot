@@ -6,10 +6,13 @@ class WordSchema(BaseModel):
 
     id: str
     body: str
+    user_id: str | None
+    translate: str | None
     examples: Tuple[str] | None
 
 class WordCreate(BaseModel):
     # id: str
     body: str
-    # translate: str
+    user_id: str | None
+    translate: str | None
     # examples: List[str]

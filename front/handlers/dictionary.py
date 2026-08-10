@@ -1,21 +1,24 @@
 from aiogram import Router
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from aiogram.types import Message, CallbackQuery
 import httpx
+from httpx import AsyncClient as client
 from front.states.states import GameMode, Dictionary
 from aiogram.fsm.context import FSMContext
 from aiogram import F
+from front.keyboards.dict_keyboards import get_accept_reject_inline_keyboard, get_dict_main_Readline_keyboard
 
 router = Router()
 
-def get_accept_reject_inline_keyboard() ->InlineKeyboardMarkup:
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Добавить", callback_data="word_accept"),
-           InlineKeyboardButton(text="Отклонить", callback_data="word_reject")]
-           ]
-    )
-    return keyboard
+#word list
+@router.message(Dictionary.word, F.text=="Список слов")
+async def word_list(message: Message):
+    r: httpx.Response = await client.get('http://127.0.0.1:8000/dict')
+    response = "Dictionary:\n"
+    for word in r.json():
+        response += word["body"] + "\n"
+    await message.answer(text=response)
 
+#main state
 @router.message(Dictionary.word, F.text)
 async def dictionary(message: Message, state: FSMContext):
     current_state = await state.get_state()
@@ -29,7 +32,7 @@ async def dictionary(message: Message, state: FSMContext):
 async def word_accepted(callback: CallbackQuery, state: FSMContext):
     word = await state.get_data()
     word = word["word"]
-    r: httpx.Response = httpx.post('http://127.0.0.1:8000/dict', json={'body': word})
+    r: httpx.Response = client.post('http://127.0.0.1:8000/dict', json={'body': word})
     await callback.message.edit_text(word + " было добавлено в словарь! ✔",)
 
 
@@ -41,6 +44,8 @@ async def word_reject(callback: CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.message.edit_text(f"Слово {word} не добавлено в словарь! ❌", reply_markup=None)
     await state.set_state(Dictionary.word)
+
+
 
 
 

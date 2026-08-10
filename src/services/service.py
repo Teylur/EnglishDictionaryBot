@@ -1,15 +1,22 @@
 from src.repository.repository import WordRepository
 from sqlalchemy.orm import Session
 from src.schemas.dict_schema import WordCreate, WordSchema
+from src.third_party.translate_api import get_translated_text
+import asyncio
+from src.exceptions import WordIsAlreadyExist
 
 class WordService:
     def __init__(self, db: Session):
         self.db = db
         self.word_repository = WordRepository(db=self.db)
 
-    def word_create(self, word: WordCreate):
-        new_word = self.word_repository.create(word)
+    async def word_create(self, word: WordCreate):
+        if await self.word_repository.word_is_exist(word=word):
+            raise WordIsAlreadyExist(word=word.body)
+        word.translate = await get_translated_text(word.body)
+        new_word = await self.word_repository.create(word)
         self.db.commit()
+        self.db.flush()
         return WordSchema.model_validate(new_word)
 
     def word_list(self):
