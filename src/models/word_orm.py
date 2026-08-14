@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from .base import Base
 from sqlalchemy.orm import Mapped, mapped_column
@@ -10,4 +10,4 @@ class WordORM(Base):
     body: Mapped[str]
     user_id: Mapped[str | None]
     translate: Mapped[str | None]
-    examples: Mapped[List[str] | None] = mapped_column(JSON)
+    examples: Mapped[List[Dict[str, str]] | None] = mapped_column(JSON)

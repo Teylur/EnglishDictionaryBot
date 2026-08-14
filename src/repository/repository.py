@@ -23,7 +23,7 @@ class WordRepository:
         return result.scalar()
 
     async def create(self, word: WordCreate):
-        new_word = WordORM(body=word.body, translate=word.translate, user_id=word.user_id)
+        new_word = WordORM(body=word.body, translate=word.translate, user_id=word.user_id, examples=word.examples)
         self.db.add(new_word)
         return new_word
 

@@ -4,6 +4,7 @@ from src.schemas.dict_schema import WordCreate, WordSchema
 from src.third_party.translate_api import get_translated_text
 import asyncio
 from src.exceptions import WordIsAlreadyExist
+from src.third_party.llm_api import get_examples_from_local_llm
 
 class WordService:
     def __init__(self, db: Session):
@@ -13,6 +14,10 @@ class WordService:
     async def word_create(self, word: WordCreate):
         if await self.word_repository.word_is_exist(word=word):
             raise WordIsAlreadyExist(word=word.body)
+        
+        examples = await get_examples_from_local_llm(word.body)
+        word.examples = examples["examples"]
+
         word.translate = await get_translated_text(word.body)
         new_word = await self.word_repository.create(word)
         self.db.commit()

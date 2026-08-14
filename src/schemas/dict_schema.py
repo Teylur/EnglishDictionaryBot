@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import List, Tuple
 from pydantic import BaseModel, ConfigDict
 
 class WordSchema(BaseModel):
@@ -8,11 +8,11 @@ class WordSchema(BaseModel):
     body: str
     user_id: str | None
     translate: str | None
-    examples: Tuple[str] | None
+    examples: list[dict[str, str]] | None
 
 class WordCreate(BaseModel):
     # id: str
     body: str
     user_id: str | None
     translate: str | None
-    # examples: List[str]
+    examples: list[dict[str, str]] | None
