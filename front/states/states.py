@@ -5,3 +5,8 @@ class GameMode(StatesGroup):
 
 class Dictionary(StatesGroup):
     word = State()
+    translate = State()
+    examples = State()
+
+class WordDelete(StatesGroup):
+    word_to_delete = State()

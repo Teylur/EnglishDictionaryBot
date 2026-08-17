@@ -15,3 +15,18 @@ def get_dict_main_Readline_keyboard() -> ReplyKeyboardMarkup:
         [KeyboardButton(text="Список слов"), KeyboardButton(text="Играть")]
     ])
     return keyboard
+
+def get_dict_delete_word_keyboard() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Удалить слово", callback_data="word_delete")]
+        ]
+    )
+    return keyboard
+def get_dict_back_button() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Назад", callback_data="back")]
+        ]
+    )
+    return keyboard

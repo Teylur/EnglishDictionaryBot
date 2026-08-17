@@ -1,6 +1,6 @@
 from sqlalchemy import select, exists
 from sqlalchemy.orm import Session
-from src.schemas.dict_schema import WordCreate
+from src.schemas.dict_schema import WordCreate, WordDelete, WordGet
 from src.models.word_orm import WordORM
 
 class WordRepository:
@@ -10,11 +10,17 @@ class WordRepository:
     def get_all(self):
         word_list = self.db.scalars(select(WordORM)).all()
         return word_list
+    def get_all_by_user(self, user_id: str):
+            word_list = self.db.query(WordORM).filter(WordORM.user_id == user_id)
+            return word_list
 
     def get_by_id(self, word_id: str) -> WordORM:
         return self.db.get(WordORM, word_id)
 
-    async def word_is_exist(self, word: WordORM):
+    def get_by_user_id_body(self, word: WordDelete | WordGet)-> WordORM:
+        return self.db.query(WordORM).filter(WordORM.body == word.body, WordORM.user_id == word.user_id).one()
+
+    async def word_is_exist(self, word: WordCreate | WordDelete | WordGet):
         request = select(exists().where(
             WordORM.body == word.body,
             WordORM.user_id == word.user_id
@@ -27,7 +33,7 @@ class WordRepository:
         self.db.add(new_word)
         return new_word
 
-    def delete(self, word_id: str):
-        word_to_delete = self.get_by_id(word_id)
+    def delete(self, word: WordDelete):
+        word_to_delete = self.get_by_user_id_body(word)
         self.db.delete(word_to_delete)
     

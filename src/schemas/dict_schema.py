@@ -16,3 +16,11 @@ class WordCreate(BaseModel):
     user_id: str | None
     translate: str | None
     examples: list[dict[str, str]] | None
+
+class WordDelete(BaseModel):
+    body: str
+    user_id: str
+
+class WordGet(BaseModel):
+    body: str
+    user_id: str
