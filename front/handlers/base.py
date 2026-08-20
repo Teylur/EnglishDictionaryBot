@@ -32,4 +32,10 @@ async def help(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(GameMode.waiting_for_answer)
     await message.answer("Играть")
+    
+@router.message(Command("Играть"))
+async def help(message: Message, state: FSMContext):
+    await state.clear()
+    await state.set_state(GameMode.waiting_for_answer)
+    await message.answer("Играть")
 

@@ -1,8 +1,6 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 from src.schemas.dict_schema import WordCreate, WordSchema, WordDelete, WordGet
-from src.db.session import get_db
 from src.api.depends import get_word_service
 
 from src.services.service import WordService
@@ -26,12 +24,12 @@ async def word_create(payload: WordCreate, word_service: WordService = Depends(g
 
 
 @router.get("/")
-def word_list(word_service: WordService = Depends(get_word_service)) -> list[WordSchema]:
-    return word_service.word_list()
+async def word_list(word_service: WordService = Depends(get_word_service)) -> list[WordSchema]:
+    return await word_service.word_list()
 
 @router.get("/{user_id}")
-def word_list(user_id: str, word_service: WordService = Depends(get_word_service)) -> list[WordSchema]:
-    return word_service.word_by_user_list(user_id=user_id)
+async def word_list(user_id: str, word_service: WordService = Depends(get_word_service)) -> list[WordSchema]:
+    return await word_service.word_by_user_list(user_id=user_id)
 
 @router.get("/{user_id}/{word_body}")
 async def get_word(user_id:str, word_body: str, word_service: WordService = Depends(get_word_service)) -> dict[str, str | list[dict[str, str]]]:

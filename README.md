@@ -26,4 +26,4 @@ Next: add examples. Completed
 
 added: worked word_list, word_create, word_delete. translate and examples in right way(by get), if word is already exists then we don't ask qwen just pull these info from database
 
-Next: Remake whole backend to async, user_id from str to int
+Next: Remake whole backend to async completed

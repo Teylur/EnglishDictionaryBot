@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram import F
 from front.keyboards.dict_keyboards import (get_accept_reject_inline_keyboard, get_dict_main_Readline_keyboard, 
                                             get_dict_delete_word_keyboard, get_dict_back_button)
+from string import punctuation
 
 router = Router()
 
@@ -24,9 +25,11 @@ async def word_list(message: Message):
 #main state
 @router.message(Dictionary.word, F.text)
 async def dictionary(message: Message, state: FSMContext):
+    
     current_state = await state.get_state()
     if current_state == GameMode.waiting_for_answer:
         return
+    
     word = message.text
     user_id = str(message.from_user.id)
     async with AsyncClient() as client:
@@ -66,7 +69,13 @@ async def word_accepted(callback: CallbackQuery, state: FSMContext):
     async with AsyncClient() as client:
         r: httpx.Response = await client.post('http://127.0.0.1:8000/dict', json={'body': word_body, 'user_id': str(callback.from_user.id), 
                                                                                   'translate': word["translate"], 'examples': word["examples"]})
-    await callback.message.edit_text(word_body + " было добавлено в словарь! ✔",)
+    #errors
+    if r.is_success:
+        await callback.message.edit_text(word_body + " было добавлено в словарь! ✔",)
+    elif r.is_client_error:
+        await callback.message.edit_text(word_body + " уже есть в словаре",)
+    else:
+        await callback.message.edit_text(word_body + " не удалось добавить в словарь",)
 
 
 #back callback
