@@ -20,6 +20,10 @@ redis:
 
 docker run -d --name engbot-redis -p 6379:6379 redis
 
+FastAPI:
+
+uvicorn src.main:app
+
 ## News:
 
 Next: Refactore the back part, make more connection between front and back, and connect database ( if you can ) Completed
@@ -33,3 +37,5 @@ added: worked word_list, word_create, word_delete. translate and examples in rig
 Next: Remake whole backend to async completed
 
 added: redis easy cache system. 
+
+added: game system, it uses redis cache.

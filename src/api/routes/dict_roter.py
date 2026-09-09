@@ -5,7 +5,7 @@ from src.api.depends import get_word_service
 
 from src.services.service import WordService
 
-from src.exceptions import WordIsAlreadyExist, WordIsNotExists
+from src.exceptions import WordIsAlreadyExist, WordIsNotExists, LLMRequestsLimit
 
 
 router = APIRouter(prefix="/dict")
@@ -35,7 +35,14 @@ async def word_list(user_id: str, word_service: WordService = Depends(get_word_s
 async def get_word(user_id:str, word_body: str, word_service: WordService = Depends(get_word_service)) -> dict[str, str | list[dict[str, str]]]:
     word = WordGet(body=word_body, user_id=user_id)
     print(word)
-    return await word_service.get_word(word)
+    try:
+        result = await word_service.get_word(word)
+    except LLMRequestsLimit as e:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=str(e)
+        )
+    return result
 
 @router.delete("/{user_id}/{word_body}", status_code=status.HTTP_204_NO_CONTENT)
 async def word_delete(user_id: str, word_body: str, word_service: WordService = Depends(get_word_service)) -> None:

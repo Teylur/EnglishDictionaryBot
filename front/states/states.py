@@ -3,6 +3,11 @@ from aiogram.fsm.state import StatesGroup, State
 class GameMode(StatesGroup):
     waiting_for_answer = State()
 
+    id = State()
+    body = State()
+    translate = State()
+
+
 class Dictionary(StatesGroup):
     word = State()
     translate = State()

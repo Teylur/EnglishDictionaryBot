@@ -7,7 +7,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram import F
 from front.keyboards.dict_keyboards import (get_accept_reject_inline_keyboard, get_dict_main_Readline_keyboard, 
                                             get_dict_delete_word_keyboard, get_dict_back_button)
-from string import punctuation
 
 router = Router()
 
@@ -34,6 +33,9 @@ async def dictionary(message: Message, state: FSMContext):
     user_id = str(message.from_user.id)
     async with AsyncClient() as client:
         r: httpx.Response = await client.get(url=f'http://127.0.0.1:8000/dict/{user_id}/{word}', timeout=30)
+    if r.is_error:
+        text = r.text + "\nПожалуйста повторите запрос позже:)"
+        await message.answer(text=text)
     temp = r.json()
     translate = temp["translate"]
     examples = temp["examples"]
