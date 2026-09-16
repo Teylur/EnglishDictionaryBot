@@ -1,6 +1,6 @@
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import sessionmaker
-from src.config.config import settings
+from config.config import settings
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from contextlib import asynccontextmanager
 

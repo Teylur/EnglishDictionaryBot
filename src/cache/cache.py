@@ -1,6 +1,6 @@
 from redis import asyncio
-from src.exceptions import HashIsAlreadyExists
-from src.cache.redis import get_redis
+from exceptions import HashIsAlreadyExists
+from cache.redis import get_redis
 import json
 
 class RedisCacheBack:

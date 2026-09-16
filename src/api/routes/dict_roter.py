@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status, Depends, HTTPException
 
-from src.schemas.dict_schema import WordCreate, WordSchema, WordDelete, WordGet
-from src.api.depends import get_word_service
+from schemas.dict_schema import WordCreate, WordSchema, WordDelete, WordGet
+from api.depends import get_word_service
 
-from src.services.service import WordService
+from services.service import WordService
 
-from src.exceptions import WordIsAlreadyExist, WordIsNotExists, LLMRequestsLimit
+from exceptions import WordIsAlreadyExist, WordIsNotExists, LLMRequestsLimit
 
 
 router = APIRouter(prefix="/dict")

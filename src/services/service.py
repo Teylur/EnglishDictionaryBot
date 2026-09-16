@@ -1,15 +1,15 @@
-from src.repository.repository import WordRepository
+from repository.repository import WordRepository
 from sqlalchemy.orm import Session
 
-from src.schemas.dict_schema import WordCreate, WordSchema,  WordDelete, WordGet
-from src.schemas.game_schemas import WordForGame
+from schemas.dict_schema import WordCreate, WordSchema,  WordDelete, WordGet
+from schemas.game_schemas import WordForGame
 
-from src.third_party.translate_api import get_translated_text
+# from third_party.translate_api import get_translated_text
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.exceptions import AllWordsPassed, HashIsAlreadyExists, WordIsAlreadyExist, WordIsNotExists, LLMRequestsLimit
-from src.third_party.llm_api import get_examples_from_local_llm
-from src.cache.cache import RedisCacheBack
-from src.config.config import settings
+from exceptions import AllWordsPassed, HashIsAlreadyExists, WordIsAlreadyExist, WordIsNotExists, LLMRequestsLimit
+from third_party.llm_api import get_examples_from_local_llm
+from cache.cache import RedisCacheBack
+from config.config import settings
 
 
 from redis.asyncio import Redis
@@ -53,16 +53,16 @@ class WordService:
         
             
     #old version of creation
-    async def word_create(self, word: WordCreate) -> WordSchema:
-        if await self.word_repository.word_is_exist(word=word):
-            raise WordIsAlreadyExist(word=word.body)
-        examples = await get_examples_from_local_llm(word.body)
-        word.examples = examples["examples"]
-        word.translate = await get_translated_text(word.body)
-        new_word = await self.word_repository.create(word)
-        await self.db.commit()
-        await self.db.flush()
-        return WordSchema.model_validate(new_word)
+    # async def word_create(self, word: WordCreate) -> WordSchema:
+    #     if await self.word_repository.word_is_exist(word=word):
+    #         raise WordIsAlreadyExist(word=word.body)
+    #     examples = await get_examples_from_local_llm(word.body)
+    #     word.examples = examples["examples"]
+    #     word.translate = await get_translated_text(word.body)
+    #     new_word = await self.word_repository.create(word)
+    #     await self.db.commit()
+    #     await self.db.flush()
+    #     return WordSchema.model_validate(new_word)
 
     #список всех слов
     async def word_list(self) -> list[WordSchema]:
@@ -135,9 +135,9 @@ class WordService:
             return response
         
         # generate
-        examples = await get_examples_from_local_llm(word_to_get.body)
-        examples = examples["examples"]
-        translate = await get_translated_text(word_to_get.body)
+        llm_response = await get_examples_from_local_llm(word_to_get.body)
+        examples = llm_response["examples"]
+        translate = llm_response["translation"]
         response = {"translate": translate, "examples": examples}
         return response
 

@@ -1,7 +1,7 @@
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.schemas.dict_schema import WordCreate, WordDelete, WordGet
-from src.models.word_orm import WordORM
+from schemas.dict_schema import WordCreate, WordDelete, WordGet
+from models.word_orm import WordORM
 
 class WordRepository:
     def __init__(self, db: AsyncSession):

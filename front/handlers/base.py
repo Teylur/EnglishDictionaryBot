@@ -4,8 +4,9 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from httpx import AsyncClient
 import httpx
-from front.states.states import Dictionary, GameMode
-from front.keyboards.dict_keyboards import get_dict_main_Readline_keyboard
+from states.states import Dictionary, GameMode
+from keyboards.dict_keyboards import get_dict_main_Readline_keyboard
+from config.config import settings
 
 router = Router()
 
@@ -34,7 +35,7 @@ async def play(message: Message, state: FSMContext):
     await state.clear()
     user_id = str(message.from_user.id)
     async with AsyncClient() as client:
-        r: httpx.Response = await client.get(url=f'http://127.0.0.1:8000/game/{user_id}')
+        r: httpx.Response = await client.get(url=f'{settings.BACKEND_URL}/game/{user_id}')
     response = r.json()
     await state.update_data(response)
     await message.answer("Переведите слово: " + response["body"])

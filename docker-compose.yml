@@ -1,0 +1,58 @@
+services:
+  front:
+    build:
+      context: ./front
+      dockerfile: dockerfile.frontend
+    container_name: frontend
+    restart: always
+    depends_on:
+      - backend
+    env_file:
+      - ./front/.env
+  backend:
+    build:
+      context: ./src
+      dockerfile: dockerfile.backend
+    container_name: backend
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+      # - ollama
+      - redis
+    env_file:
+      - ./src/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  db:
+    image: postgres:15
+    container_name: pg_container
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 15432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+  redis:
+    image: redis
+    container_name: redis_container
+    restart: always
+    volumes:
+      - redis-data:/data
+    ports:
+      - 6379:6379
+  # ollama:
+  #  image: ollama/ollama:latest
+  #  restart: always
+  #  volumes:
+  #   - ollama_data:/root/.ollama
+
+volumes:
+  pgdata: # ollama_data:
+
+  redis-data:
+

@@ -2,11 +2,12 @@ from aiogram import Router
 from aiogram.types import Message, CallbackQuery
 import httpx
 from httpx import AsyncClient
-from front.states.states import GameMode, Dictionary, WordDelete
+from states.states import GameMode, Dictionary, WordDelete
 from aiogram.fsm.context import FSMContext
 from aiogram import F
-from front.keyboards.dict_keyboards import (get_accept_reject_inline_keyboard, get_dict_main_Readline_keyboard, 
+from keyboards.dict_keyboards import (get_accept_reject_inline_keyboard, get_dict_main_Readline_keyboard, 
                                             get_dict_delete_word_keyboard, get_dict_back_button)
+from config.config import settings
 
 router = Router()
 
@@ -15,7 +16,7 @@ router = Router()
 async def word_list(message: Message):
     user_id = str(message.from_user.id)
     async with AsyncClient() as client:
-        r: httpx.Response = await client.get(url=f'http://127.0.0.1:8000/dict/{user_id}')
+        r: httpx.Response = await client.get(url=f'{settings.BACKEND_URL}/dict/{user_id}')
     response = "Dictionary:\n"
     for word in r.json():
         response += word["body"] + " - " + word["translate"] +"\n"
@@ -32,7 +33,7 @@ async def dictionary(message: Message, state: FSMContext):
     word = message.text
     user_id = str(message.from_user.id)
     async with AsyncClient() as client:
-        r: httpx.Response = await client.get(url=f'http://127.0.0.1:8000/dict/{user_id}/{word}', timeout=30)
+        r: httpx.Response = await client.get(url=f'{settings.BACKEND_URL}/dict/{user_id}/{word}', timeout=30)
     if r.is_error:
         text = r.text + "\nПожалуйста повторите запрос позже:)"
         await message.answer(text=text)
@@ -55,7 +56,7 @@ async def word_delete(message: Message, state: FSMContext):
     user_id = str(message.from_user.id)
     print(user_id)
     async with AsyncClient() as client:
-        r: httpx.Response = await client.delete(f'http://127.0.0.1:8000/dict/{user_id}/{word_to_delete}')
+        r: httpx.Response = await client.delete(f'{settings.BACKEND_URL}/dict/{user_id}/{word_to_delete}')
     if r.is_error:
         await message.answer(text=f"Слово {word_to_delete} не найдено! \nПроверьте корректность написания.", reply_markup=get_dict_back_button())
     else:
@@ -69,7 +70,7 @@ async def word_accepted(callback: CallbackQuery, state: FSMContext):
     print(word, callback.from_user.id)
     word_body: str = word["word"].lower()
     async with AsyncClient() as client:
-        r: httpx.Response = await client.post('http://127.0.0.1:8000/dict', json={'body': word_body, 'user_id': str(callback.from_user.id), 
+        r: httpx.Response = await client.post(f'{settings.BACKEND_URL}/dict', json={'body': word_body, 'user_id': str(callback.from_user.id), 
                                                                                   'translate': word["translate"], 'examples': word["examples"]})
     #errors
     if r.is_success:

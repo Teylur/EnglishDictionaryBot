@@ -1,11 +1,11 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from src.models.base import Base
-from src.db.session import engine
-from src.api.routes.dict_roter import router as dict_router
-from src.api.routes.game_router import router as game_router
-from src.cache.redis import redis_init, redis_close
+from models.base import Base
+from db.session import engine
+from api.routes.dict_roter import router as dict_router
+from api.routes.game_router import router as game_router
+from cache.redis import redis_init, redis_close
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

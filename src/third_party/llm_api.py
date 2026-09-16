@@ -1,6 +1,6 @@
 import json
 from ollama import AsyncClient
-from src.config.config import settings
+from config.config import settings
 
 client = AsyncClient(
   host=settings.LOCAL_LLM_URL,

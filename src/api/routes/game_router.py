@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.exceptions import AllWordsPassed
-from src.schemas.game_schemas import WordForGame
+from exceptions import AllWordsPassed
+from schemas.game_schemas import WordForGame
 
-from src.api.depends import get_word_service
+from api.depends import get_word_service
 
-from src.services.service import WordService
+from services.service import WordService
 
 
 router = APIRouter(prefix="/game")

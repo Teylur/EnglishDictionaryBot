@@ -1,9 +1,9 @@
-from src.config.config import settings
+from config.config import settings
 import asyncio
 from aiogram import Bot, Dispatcher
-from front.handlers.base import router as base_router
-from front.handlers.dictionary import router as dictionary_router
-from front.handlers.game import router as game_router
+from handlers.base import router as base_router
+from handlers.dictionary import router as dictionary_router
+from handlers.game import router as game_router
 
 dp = Dispatcher()
 

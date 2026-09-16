@@ -1,5 +1,5 @@
 import redis.asyncio as aioredis
-from src.config.config import settings
+from config.config import settings
 
 redis_client: aioredis.Redis
 

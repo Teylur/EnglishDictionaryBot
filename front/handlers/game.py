@@ -1,8 +1,9 @@
 from aiogram import Router
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from front.states.states import GameMode
+from states.states import GameMode
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
+from config.config import settings
 
 from httpx import AsyncClient
 import httpx
@@ -17,7 +18,7 @@ async def test_word(message: Message, state: FSMContext):
     correct_translate = data["translate"]
     if message.text != correct_translate:
         async with AsyncClient() as client:
-            r: httpx.Response = await client.post(f'http://127.0.0.1:8000/game/{message.from_user.id}/{data["id"]}')
+            r: httpx.Response = await client.post(f'{settings.BACKEND_URL}/game/{message.from_user.id}/{data["id"]}')
         await message.answer("Неприавльно, правильный перевод: " + correct_translate)
     else:
         await message.answer("Correct!")
@@ -26,10 +27,10 @@ async def test_word(message: Message, state: FSMContext):
 
     user_id = str(message.from_user.id)
     async with AsyncClient() as client:
-        r: httpx.Response = await client.get(url=f'http://127.0.0.1:8000/game/{user_id}')
+        r: httpx.Response = await client.get(url=f'{settings.BACKEND_URL}/game/{user_id}')
     if r.is_error:
         async with AsyncClient() as client:
-            r_2: httpx.Response = await client.get(url=f'http://127.0.0.1:8000/game/wrong/{user_id}')
+            r_2: httpx.Response = await client.get(url=f'{settings.BACKEND_URL}/game/wrong/{user_id}')
         response = ""
         for word in r_2.json():
             response += word["body"] + "\n"
