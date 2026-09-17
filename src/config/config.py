@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     REDIS_URL: str 
     LLM_REQUESTS_LIMIT: int
     LLM_REQUESTS_TTL: int
+    OLLAMA_MODEL: str
     
     # Говорим Pydantic читать из файла .env
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
