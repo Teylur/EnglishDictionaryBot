@@ -19,20 +19,20 @@ services:
       - 8080:8080
     depends_on:
       - db
-      # - ollama
+      - ollama
       - redis
     env_file:
       - ./src/.env
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
   db:
     image: postgres:15
     container_name: pg_container
     restart: always
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - 15432:5432
+    # ports:
+    #   - 15432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
@@ -43,16 +43,16 @@ services:
     restart: always
     volumes:
       - redis-data:/data
-    ports:
-      - 6379:6379
-  # ollama:
-  #  image: ollama/ollama:latest
-  #  restart: always
-  #  volumes:
-  #   - ollama_data:/root/.ollama
+    # ports:
+    #   - 6379:6379
+  ollama:
+    image: ollama/ollama:latest
+    restart: always
+    volumes:
+      - ollama_data:/root/.ollama
 
 volumes:
-  pgdata: # ollama_data:
-
+  pgdata:
+  ollama_data:
   redis-data:
 
